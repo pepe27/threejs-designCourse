@@ -34,6 +34,9 @@
       camera.updateProjectionMatrix(); //needed.
     })
 
+    //Use a Raycaster, to interact with a specific object
+    const raycaster = new THREE.Raycaster();
+    const mouse = new THREE.Vector2();
 
     // const geometry = new THREE.TorusGeometry( 2, .5, 4, 50 );
     const geometry = new THREE.BoxGeometry( 2, .5, 4, 25 );
@@ -42,32 +45,59 @@
     const mesh = new THREE.Mesh( geometry, material );
     scene.add( mesh );
 
+    const geometry2 = new THREE.SphereGeometry( 1, 20, 20);
+    const material2 = new THREE.MeshLambertMaterial( { color: 0x0000ff } );
+    const mesh2 = new THREE.Mesh( geometry2, material2 );
+    mesh2.position.y = 2;
+    scene.add( mesh2 );
+
+
     mesh.position.set(2,1,-2);
     mesh.rotation.set(45,0,0);
     mesh.scale.set(1,2,1);
 
-    const light = new THREE.PointLight( 0xff00FF, 1, 500 );
+    const light = new THREE.PointLight( 0xFFFFFF, 1, 500 );
     light.position.set( 10, 0, 25 );
     scene.add( light );
 
     const render = function() {
-    requestAnimationFrame(render); //loop to redraw scene. everytime browser refreshes. like setInterval
+      requestAnimationFrame(render); //loop to redraw scene. everytime browser refreshes. like setInterval
 
-    // mesh.rotation.x += 0.02; //animating here
-    // mesh.rotation.y += 0.01;
-    // mesh.scale.x -= 0.01;
+      // mesh.rotation.x += 0.02; //animating here
+      // mesh.rotation.y += 0.01;
+      // mesh.scale.x -= 0.001;
 
-    renderer.render(scene,camera); //this line must always be the LAST
+      renderer.render(scene,camera); //this line must always be the LAST
+    }
+
+    function onMouseMove(event){
+      event.preventDefault(); //necessary for click events
+
+      mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1; //how to get mouse.x/mouse.y
+      mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+
+      raycaster.setFromCamera(mouse, camera);
+
+      const intersects = raycaster.intersectObjects(scene.children, true);
+      for (let i =0; i <intersects.length; i++ ) {
+        // intersects[i].object.material.color.set(0x00ff00);
+
+        //GSAP Animation TimelineMax Plugin
+        this.tl = new TimelineMax(); //{paused: true}
+        this.tl.to(intersects[i].object.scale, 1, {x: 2, ease: Expo.easeOut})
+        this.tl.to(intersects[i].object.scale, .5, {x: .5, ease: Expo.easeOut})
+        this.tl.to(intersects[i].object.position, .5, {x: 2, ease: Expo.easeOut})
+        this.tl.to(intersects[i].object.rotation, .5, {y: Math.PI*.5, ease: Expo.easeOut}, "=-1.5")
+      }
     }
 
     render();
 
-    //GSAP Animattion TimelineMax Plugin
-    this.tl = new TimelineMax().delay(.3);
-    this.tl.to(this.mesh.scale, 1, {x: 2, ease: Expo.easeOut});
-    this.tl.to(this.mesh.scale, .5, {x: .5, ease: Expo.easeOut});
-    this.tl.to(this.mesh.position, .5, {x: 2, ease: Expo.easeOut});
-    this.tl.to(this.mesh.rotation, .5, {y: Math.PI*.5, ease: Expo.easeOut}, "=-1.5");
+
+
+    //User can click/mousemove anywhere on screen, to play the animation
+    window.addEventListener('mousemove', onMouseMove);
+
 
 
   </script>
