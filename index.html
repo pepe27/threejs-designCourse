@@ -4,11 +4,16 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+  @import url('https://fonts.googleapis.com/css2?family=Alike+Angular&family=Montserrat:wght@100;300&family=Work+Sans:ital,wght@0,100;0,200;0,300;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+  </style>
   <link rel="stylesheet" href="css/main.css">
   <title>3js intro</title>
 </head>
 <body>
-  
+  <h1>Mimi Xuan IMM!</h1>
+
+
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/102/three.js"></script>
   <!-- Greensock Animation Timeline -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/2.1.2/TweenMax.min.js"></script>
@@ -41,9 +46,9 @@
     // const geometry = new THREE.TorusGeometry( 2, .5, 4, 50 );
     const geometry = new THREE.BoxGeometry( 2, .5, 4, 25 );
     // const geometry = new THREE.SphereGeometry( 1, 10, 10);
-    const material = new THREE.MeshLambertMaterial( { color: 0xffff00 } );
-    const mesh = new THREE.Mesh( geometry, material );
-    scene.add( mesh );
+    const material = new THREE.MeshLambertMaterial( { color: 0xF7F7F7 } );
+    // const mesh = new THREE.Mesh( geometry, material );
+    // scene.add( mesh );
 
     const geometry2 = new THREE.SphereGeometry( 1, 20, 20);
     const material2 = new THREE.MeshLambertMaterial( { color: 0x0000ff } );
@@ -51,14 +56,29 @@
     mesh2.position.y = 2;
     scene.add( mesh2 );
 
+    let meshX = -10;
+    for (let i = 0; i <15 ; i++) {
+      const mesh = new THREE.Mesh( geometry, material );
+      mesh.position.x += (Math.random() - 0.5) * 10;
+      mesh.position.y += (Math.random() - 0.5) * 10;
+      mesh.position.z += (Math.random() - 0.5) * 10;
+      scene.add(mesh);
+      meshX += 1;
+    }
 
-    mesh.position.set(2,1,-2);
-    mesh.rotation.set(45,0,0);
-    mesh.scale.set(1,2,1);
 
-    const light = new THREE.PointLight( 0xFFFFFF, 1, 500 );
-    light.position.set( 10, 0, 25 );
+    // mesh.position.set(2,1,-2);
+    // mesh.rotation.set(45,0,0);
+    // mesh.scale.set(1,2,1);
+
+    const light = new THREE.PointLight( 0xFFFFFF, 1, 1000 );
+    light.position.set(0,0,0);
     scene.add( light );
+
+    //light2 gets rid of the harsh shadows
+    const light2 = new THREE.PointLight( 0xFFFFFF, 2, 1000 );
+    light2.position.set(0,0,25);
+    scene.add( light2 );
 
     const render = function() {
       requestAnimationFrame(render); //loop to redraw scene. everytime browser refreshes. like setInterval
